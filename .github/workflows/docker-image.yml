@@ -22,6 +22,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Use variables
+      run: |
+        echo "REPOSITORY_NAME : {{ env.REPOSITORY_NAME }}"
+        echo "VARS: ${{ vars.REPOSITORY_NAME }}"
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
