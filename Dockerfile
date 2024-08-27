@@ -1,4 +1,5 @@
-FROM python:3.11.9-alpine3.20
+FROM python:3.11.9
+RUN apt-get -y update
 COPY app /app
 COPY requirements.txt /requirements.txt
 
