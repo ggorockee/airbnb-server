@@ -17,7 +17,7 @@ jobs:
       with:
         name: 'MINOR'
         value: ${{ env.MINOR }} + 1
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
   # build:
 
   #   runs-on: ubuntu-latest
