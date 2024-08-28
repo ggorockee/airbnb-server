@@ -6,40 +6,11 @@ on:
     
 jobs:
   Job1:
-    runs-on: ubuntu-latest
-    name: Job to evaluate variables
-    outputs:
-      ENVIRONMENT: "environ-test"
-      USER: "environ-user"
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: set variables
-        uses: marcdomain/set-variables@v1.2
-        with:
-          variables: |
-            ENVIRONMENT: "zzzzzz"
-            USERNAME: "kkkkk"
-      
-      - name: Verify the variables
-        run: |
-          echo "environment is ${{ env.ENVIRONMENT }}"
-          echo "username is ${{ env.USERNAME }}"
-
-  Job2:
-    runs-on: ubuntu-latest
-    name: Use variables from previous job
-    needs: Job1
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get the output variables
-        run: |
-          echo "check the USERNAME ${{ needs.Job1.outputs.USER }}"
-          echo "check the ENVIRON ${{ needs.Job1.outputs.ENVIRONMENT }}"
+    uses: action-pack/set-variable@v1
+    with:
+      name: 'MY_VARIABLE'
+      value: 'Lorem ipsun dolor simit'
+      token: ${{ secrets.REPO_ACCESS_TOKEN }}
   # build:
 
   #   runs-on: ubuntu-latest
