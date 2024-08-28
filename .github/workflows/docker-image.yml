@@ -5,20 +5,41 @@ on:
     branches: [ "dev" ]
     
 jobs:
-  tags:
+  Job1:
     runs-on: ubuntu-latest
+    name: Job to evaluate variables
+    outputs:
+      ENVIRONMENT: "environ-test"
+      USER: "environ-user"
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.2
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: set variables
+        uses: marcdomain/set-variables@v1.2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create a GitHub release
+          variables: |
+            ENVIRONMENT: "zzzzzz"
+            USERNAME: "kkkkk"
+      
+      - name: Verify the variables
         run: |
-          "echo ${{ steps.tag_version.outputs.new_tag }}"
-          "Release ${{ steps.tag_version.outputs.new_tag }}"
-          "body: ${{ steps.tag_version.outputs.changelog }}"
+          echo "environment is ${{ env.ENVIRONMENT }}"
+          echo "username is ${{ env.USERNAME }}"
+
+  Job2:
+    runs-on: ubuntu-latest
+    name: Use variables from previous job
+    needs: Job1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get the output variables
+        run: |
+          echo "check the USERNAME ${{ needs.Job1.outputs.USER }}"
+          echo "check the ENVIRON ${{ needs.Job1.outputs.ENVIRONMENT }}"
   # build:
 
   #   runs-on: ubuntu-latest
