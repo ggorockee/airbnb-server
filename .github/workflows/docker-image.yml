@@ -34,4 +34,11 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.REPOSITORY_NAME }}:${SHORT_SHA}
+        tags: "${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.REPOSITORY_NAME }}:${SHORT_SHA}"
+      
+
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Add SHORT_SHA env property with commit short sha
+  #     run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
