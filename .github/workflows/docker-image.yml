@@ -6,11 +6,14 @@ on:
     
 jobs:
   Job1:
-    uses: action-pack/set-variable@v1
-    with:
-      name: 'MY_VARIABLE'
-      value: 'Lorem ipsun dolor simit'
-      token: ${{ secrets.REPO_ACCESS_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: var-test
+      uses: action-pack/set-variable@v1
+      with:
+        name: 'MY_VARIABLE'
+        value: 'Lorem ipsun dolor simit'
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
   # build:
 
   #   runs-on: ubuntu-latest
