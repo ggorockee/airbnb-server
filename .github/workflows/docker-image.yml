@@ -61,13 +61,13 @@ jobs:
       with:
         repository: ${{ env.TARGET_REPOSITORY }}
         token: ${{ env.GIT_TOKEN }}
-        path: helm-repository/apps/airbnb-server
+        path: helm-repository
 
     - run: ls -al
 
     - uses: fjogeleit/yaml-update-action@main
       with:
-        valueFile: 'values.yaml'
+        valueFile: 'apps/airbnb-server/values.yaml'
         propertyPath: 'image.tag'
         value: ${{ needs.build.outputs.SHA }}
         message: 'ci: Update image tag to ${{ needs.build.outputs.SHA }}'
