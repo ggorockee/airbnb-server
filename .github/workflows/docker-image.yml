@@ -63,6 +63,8 @@ jobs:
         token: ${{ env.GIT_TOKEN }}
         path: helm-repository/apps/airbnb-server
 
+    - run: ls -al
+
     - uses: fjogeleit/yaml-update-action@main
       with:
         valueFile: 'values.yaml'
