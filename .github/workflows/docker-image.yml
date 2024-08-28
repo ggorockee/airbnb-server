@@ -22,7 +22,7 @@ jobs:
       uses: marcdomain/set-variables@v1.2
       with:
         variables: |
-          SHA: ${{ env.SHA }}
+          SHA: "${{ env.SHA }}"
           
     # - run: echo $SHA
     #   env:
