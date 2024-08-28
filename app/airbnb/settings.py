@@ -141,3 +141,11 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://airbnb.dev.ggorockee.com",
+    "http://airbnb.ggorockee.com",
+    "https://airbnb.dev.ggorockee.com",
+    "https://airbnb.ggorockee.com",
+]
