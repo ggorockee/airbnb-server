@@ -39,6 +39,7 @@ SYSTEM_APPS = [
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
+    'drf_yasg',
 ]
 ROUTER_APPS = [
     'users.apps.UsersConfig'
