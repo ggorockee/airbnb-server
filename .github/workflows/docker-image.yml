@@ -7,19 +7,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      SHA: ${{ env.SHA }}
     steps:
-
     - name: Set short git commit SHA
       uses: benjlevesque/short-sha@v3.0
       id: short-sha
       with:
         length: 6
     
-    - name: Set environment variable
-      uses: alsosee/envset@v1
+    - name: set variables
+      uses: marcdomain/set-variables@v1.2
       with:
-        name: SHA
-        value: ${{ steps.short-sha.outputs.sha }}
+        variables: |
+          SHA: ${{ steps.short-sha.outputs.sha }}
+          
     # - run: echo $SHA
     #   env:
     #     SHA: ${{ steps.short-sha.outputs.sha }}
@@ -52,4 +54,4 @@ jobs:
     needs: build
     steps:
     - name: echo sha
-      run: echo "sha = ${{env.SHA}}"
+      run: echo "sha = ${{needs.build.outputs.SHA}}"
