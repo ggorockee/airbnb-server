@@ -14,6 +14,11 @@ jobs:
       id: short-sha
       with:
         length: 6
+    
+    - run: echo $SHA
+      env:
+        SHA: ${{ steps.short-sha.outputs.sha }}
+    
     - name: Checkout 
       uses: actions/checkout@v4
     
@@ -34,11 +39,11 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.REPOSITORY_NAME }}:${{ steps.short-sha.outputs.sha }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.REPOSITORY_NAME }}:${{ env.sha }}
       
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Add SHORT_SHA env property with commit short sha
-  #     run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: echo sha
+      run: echo "sha = ${{env.sha}}"
