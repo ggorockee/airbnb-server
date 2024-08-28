@@ -1,7 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    BaseUserManager,
+)
 from django.utils.translation import gettext_lazy as _
-
 
 
 class UserManager(BaseUserManager):
@@ -15,7 +18,7 @@ class UserManager(BaseUserManager):
         # Lookup the real model class from the global app registry so this
         # manager method can be used in migrations. This is fine because
         # managers are by definition working on the real model.
-        
+
         user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -24,7 +27,7 @@ class UserManager(BaseUserManager):
     def create_user(self, email, password=None, username=None, **extra_fields):
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
-        return self._create_user(email, password, username, **extra_fields)
+        return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password=None, username=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
@@ -35,8 +38,9 @@ class UserManager(BaseUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
 
-        return self._create_user(email, password, username, **extra_fields)
-    
+        return self._create_user(email, password, **extra_fields)
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     class GenderChoices(models.TextChoices):
         MALE = ("male", "Male")
@@ -59,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         editable=False,
     )
     avatar = models.ImageField(blank=True)
-    name = models.CharField(
+    username = models.CharField(
         max_length=150,
         default="",
     )
@@ -68,8 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         unique=True,
         blank=False,
         editable=False,
-    )    
-
+    )
 
     is_host = models.BooleanField(default=False)
     gender = models.CharField(
@@ -84,11 +87,23 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=5,
         choices=CurrencyChoices.choices,
     )
+    is_staff = models.BooleanField(
+        _("staff status"),
+        default=False,
+        help_text=_("Designates whether the user can log into this admin site."),
+    )
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this user should be treated as active. "
+            "Unselect this instead of deleting accounts."
+        ),
+    )
 
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    
 
     class Meta:
         verbose_name = _("user")
