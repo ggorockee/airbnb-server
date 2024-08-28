@@ -4,20 +4,15 @@ on:
   push:
     branches: [ "dev" ]
 
-env:
-  MAJOR: ${{ vars.MAJOR }} # 1
-  MINOR: ${{ vars.MINOR }} # 1
-
 jobs:
   Job1:
     runs-on: ubuntu-latest
     steps:
-    - name: version update
-      uses: action-pack/set-variable@v1
-      with:
-        name: 'MINOR'
-        value: ${{ env.MINOR }} + 1
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+    - name: Add SHORT_SHA env property with commit short sha
+      run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+    - name: My step
+      run: |
+        echo "myscript ${SHORT_SHA}"
   # build:
 
   #   runs-on: ubuntu-latest
