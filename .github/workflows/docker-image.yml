@@ -62,8 +62,6 @@ jobs:
         repository: ${{ env.TARGET_REPOSITORY }}
         token: ${{ env.GIT_TOKEN }}
 
-    - run: ls -al
-
     - uses: fjogeleit/yaml-update-action@main
       with:
         valueFile: 'values.yaml'
