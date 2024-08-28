@@ -15,9 +15,14 @@ jobs:
       with:
         length: 6
     
-    - run: echo $SHA
-      env:
-        SHA: ${{ steps.short-sha.outputs.sha }}
+    - name: Set environment variable
+      uses: alsosee/envset@v1
+      with:
+        name: SHA
+        value: ${{ steps.short-sha.outputs.sha }}
+    # - run: echo $SHA
+    #   env:
+    #     SHA: ${{ steps.short-sha.outputs.sha }}
     
     # - name: Checkout 
     #   uses: actions/checkout@v4
