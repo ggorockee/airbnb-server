@@ -66,10 +66,9 @@ jobs:
       with:
         valueFile: 'helm-repository/apps/airbnb-server/values.yaml'
         propertyPath: 'image.tag'
-        value: \"${{ needs.build.outputs.SHA }}\"
-        message: 'ci: Update image tag to ${{ needs.build.outputs.SHA }}'
+        value: "${{ needs.build.outputs.SHA }}"
+        message: 'ci: Update airbnb-server image tag to ${{ needs.build.outputs.SHA }}'
         commitChange: true
         branch: main
         repository: ${{ env.TARGET_REPOSITORY }}
         token: ${{ env.GIT_TOKEN }}
-        # workDir: ''
