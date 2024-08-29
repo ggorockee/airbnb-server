@@ -162,3 +162,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://airbnb.dev.ggorockee.com",
     "https://airbnb.ggorockee.com",
 ]
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = ["*"]
