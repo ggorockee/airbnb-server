@@ -320,3 +320,4 @@ app/db.sqlite3
 app/*/migrations/0*.py
 .ieda/
 app/.idea/
+*.sqlite3
