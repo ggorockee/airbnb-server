@@ -318,3 +318,5 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,django,visualstudiocode,macos
 app/db.sqlite3
 app/users/migrations/0*.py
+.ieda/
+app/.idea/
