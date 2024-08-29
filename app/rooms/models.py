@@ -27,8 +27,12 @@ class Room(CommonModel):
     rooms = models.PositiveIntegerField()
     toilets = models.PositiveIntegerField()
     description = models.TextField()
-    address = models.CharField(max_length=250)
-    pet_friendly = models.BooleanField(default=False)
+    address = models.CharField(
+        max_length=250,
+    )
+    pet_friendly = models.BooleanField(
+        default=False,
+    )
     kind = models.CharField(
         max_length=20,
         choices=RoomKindChoices.choices,
@@ -39,9 +43,16 @@ class Room(CommonModel):
         on_delete=models.CASCADE,
     )
 
-    amenities = models.ManyToManyField("rooms.Amenity")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    amenities = models.ManyToManyField(
+        "rooms.Amenity",
+    )
+
+    category = models.ForeignKey(
+        "categories.Category",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
 
     def __str__(self) -> CharField:
         return self.name
@@ -50,7 +61,9 @@ class Room(CommonModel):
 class Amenity(CommonModel):
     """Amenity Definition"""
 
-    name = models.CharField(max_length=150)
+    name = models.CharField(
+        max_length=150,
+    )
     description = models.CharField(
         max_length=150,
         null=True,
