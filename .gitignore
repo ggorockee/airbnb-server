@@ -321,3 +321,5 @@ app/*/migrations/0*.py
 .ieda/
 app/.idea/
 *.sqlite3
+app/db.sqlite3
+*.sqlite3

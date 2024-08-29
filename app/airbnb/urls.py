@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.conf import settings
 
 
@@ -26,6 +26,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("healthz/ready", HelathCheck.as_view()),
+    path("api/v1/categories", include("categories.urls")),
 ]
 
 if settings.DEBUG:
