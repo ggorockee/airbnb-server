@@ -9,37 +9,62 @@ from categories.serializers import CategorySerializer
 
 
 class Categories(APIView):
-    @swagger_auto_schema(tags=["Category"], request_body=None)
+    @swagger_auto_schema(
+        tags=["Category"],
+        request_body=None,
+    )
     def get(self, request):
         all_categories = Category.objects.all()
-        serializer = CategorySerializer(all_categories, many=True)
+        serializer = CategorySerializer(
+            all_categories,
+            many=True,
+        )
         return Response(serializer.data)
 
-    @swagger_auto_schema(tags=["Category"], request_body=CategorySerializer)
+    @swagger_auto_schema(
+        tags=["Category"],
+        request_body=CategorySerializer,
+    )
     def post(self, request):
-        serializer = CategorySerializer(data=request.dat)
+        serializer = CategorySerializer(
+            data=request.data,
+        )
         if serializer.is_valid():
             new_category = serializer.save()
             return Response(
                 CategorySerializer(new_category).data,
             )
 
-        return Response(serializer.errors)
+        return Response(
+            serializer.errors,
+        )
 
 
 class CategoryDetail(APIView):
     def get_object(self, category_id):
         try:
-            return Category.objects.get(id=category_id)
+            return Category.objects.get(
+                id=category_id,
+            )
         except Category.DoesNotExist:
             raise NotFound
 
-    @swagger_auto_schema(tags=["Category"], request_body=None)
+    @swagger_auto_schema(
+        tags=["Category"],
+        request_body=None,
+    )
     def get(self, request, category_id):
-        serializer = CategorySerializer(self.get_object(category_id))
-        return Response(serializer.data)
+        serializer = CategorySerializer(
+            self.get_object(category_id),
+        )
+        return Response(
+            serializer.data,
+        )
 
-    @swagger_auto_schema(tags=["Category"], request_body=CategorySerializer)
+    @swagger_auto_schema(
+        tags=["Category"],
+        request_body=CategorySerializer,
+    )
     def patch(self, request, category_id):
         serializer = CategorySerializer(
             Category,
@@ -48,8 +73,12 @@ class CategoryDetail(APIView):
         )
         if serializer.is_valid():
             updated_category = serializer.save()
-            return Response(CategorySerializer(updated_category).data)
-        return Response(serializer.errors)
+            return Response(
+                CategorySerializer(updated_category).data,
+            )
+        return Response(
+            serializer.errors,
+        )
 
     @swagger_auto_schema(tags=["Category"], request_body=CategorySerializer)
     def delete(self, request, category_id):

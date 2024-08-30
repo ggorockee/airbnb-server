@@ -9,4 +9,8 @@ class CategorySerializer(serializers.ModelSerializer):
         # "__all__" : 모든필드
         # exclude = []
         # fields = []
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "kind",
+        ]

@@ -34,7 +34,9 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("healthz/ready", HelathCheck.as_view()),
-    path("api/v1/categories", include("categories.urls")),
+    path("api/v1/categories/", include("categories.urls")),
+    path("api/v1/rooms/", include("rooms.urls")),
+    path("api/v1/experiences/", include("experiences.urls")),
 ]
 
 if settings.DEBUG:
