@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import (
@@ -12,6 +13,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from bookings.models import Booking
+from bookings.serializers import PublicBookingSerializer, CreateRoomBookingSerializer
 from categories.models import Category
 from medias.serializers import PhotoSerializer
 from reviews.seirializers import ReviewsSerializer
@@ -22,6 +25,7 @@ ROOM_TAG = "Rooms"
 ROOM_AMENITY_TAG = f"{ROOM_TAG}/Amenities"
 ROOM_REVIEW_TAG = f"{ROOM_TAG}/Reviews"
 ROOM_PHOTO_TAG = f"{ROOM_TAG}/Photos"
+ROOM_BOOKING_TAG = f"{ROOM_TAG}/Bookings"
 
 
 class Amenities(APIView):
@@ -317,4 +321,48 @@ class RoomPhotos(APIView):
             photo = serializer.save(room=room)
             serializer = PhotoSerializer(photo)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RoomBookings(APIView):
+    permission_classes = [
+        IsAuthenticatedOrReadOnly,
+    ]
+
+    @staticmethod
+    def get_object(room_id):
+        return get_object_or_404(Room, id=room_id)
+
+    @swagger_auto_schema(tags=[ROOM_BOOKING_TAG])
+    def get(self, request, room_id):
+        room = self.get_object(room_id)
+        now = timezone.localtime(timezone.now()).date()
+        bookings = Booking.objects.filter(
+            room=room,
+            kind=Booking.BookingKindChoices.ROOM,
+            check_in__gt=now,
+        )
+        serializers = PublicBookingSerializer(
+            bookings,
+            many=True,
+        )
+        return Response(
+            serializers.data,
+            status=status.HTTP_200_OK,
+        )
+
+    @swagger_auto_schema(
+        tags=[ROOM_BOOKING_TAG], request_body=CreateRoomBookingSerializer
+    )
+    def post(self, request, room_id: int):
+        room = self.get_object(room_id)
+        serializer = CreateRoomBookingSerializer(data=request.data)
+        if serializer.is_valid():
+            booking = serializer.save(
+                room=room,
+                kind=Booking.BookingKindChoices.ROOM,
+                user=request.user,
+            )
+            serializer = PublicBookingSerializer(booking)
+            return Response({"ok": True}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
