@@ -10,6 +10,7 @@ from rest_framework.exceptions import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from categories.models import Category
 from medias.serializers import PhotoSerializer
@@ -133,6 +134,10 @@ class AmenityDetail(APIView):
 
 
 class Rooms(APIView):
+    permission_classes = [
+        IsAuthenticatedOrReadOnly,
+    ]
+
     @swagger_auto_schema(
         tags=[ROOM_TAG],
     )
@@ -152,43 +157,46 @@ class Rooms(APIView):
     def post(self, request):
         # 무언가를 생성하기 위해서 데이터는 serializer를 통해서 전달되어야함
         # serializer는 validation 해줄거고(데이너가 정확한지, 유저가 보낸 데이터로 방을 생성할 수 있는지)
-        if request.user.is_authenticated:
-            serializer = RoomDetailSerializer(
-                data=request.data,
-            )
-            if serializer.is_valid():
-                category_id = request.data.get("category")
-                if not category_id:
-                    raise ParseError("Category is required")
 
-                category = get_object_or_404(Category, id=category_id)
-                if category.kind != Category.CategoryKindChoices.ROOM:
-                    raise ParseError("Category kind should be 'rooms'")
+        serializer = RoomDetailSerializer(
+            data=request.data,
+        )
+        if serializer.is_valid():
+            category_id = request.data.get("category")
+            if not category_id:
+                raise ParseError("Category is required")
 
-                try:
-                    with transaction.atomic():
-                        room = serializer.save(
-                            owner=request.user,
-                            category=category,
-                        )
-                        amenities = request.data.get("amenities")
-                        for amenity_id in amenities:
-                            amenity = Amenity.objects.get(id=amenity_id)
-                            room.amenities.add(amenity)
-                        serializer = RoomDetailSerializer(room)
-                        return Response(
-                            serializer.data,
-                            status=status.HTTP_200_OK,
-                        )
-                except Exception:
-                    raise ParseError("Amenity not found")
-            return Response(
-                serializer.errors,
-            )
-        raise NotAuthenticated
+            category = get_object_or_404(Category, id=category_id)
+            if category.kind != Category.CategoryKindChoices.ROOM:
+                raise ParseError("Category kind should be 'rooms'")
+
+            try:
+                with transaction.atomic():
+                    room = serializer.save(
+                        owner=request.user,
+                        category=category,
+                    )
+                    amenities = request.data.get("amenities")
+                    for amenity_id in amenities:
+                        amenity = Amenity.objects.get(id=amenity_id)
+                        room.amenities.add(amenity)
+                    serializer = RoomDetailSerializer(room)
+                    return Response(
+                        serializer.data,
+                        status=status.HTTP_200_OK,
+                    )
+            except Exception:
+                raise ParseError("Amenity not found")
+        return Response(
+            serializer.errors,
+        )
 
 
 class RoomDetail(APIView):
+    permission_classes = [
+        IsAuthenticatedOrReadOnly,
+    ]
+
     @staticmethod
     def get_object(room_id):
         try:
@@ -228,8 +236,7 @@ class RoomDetail(APIView):
     )
     def delete(self, request, room_id):
         room = self.get_object(room_id)
-        if not request.user.is_authenticated:
-            raise NotAuthenticated
+
         if room.owner != request.user:
             raise PermissionDenied
         room.delete()
@@ -237,6 +244,10 @@ class RoomDetail(APIView):
 
 
 class RoomReviews(APIView):
+    permission_classes = [
+        IsAuthenticatedOrReadOnly,
+    ]
+
     @staticmethod
     def get_object(room_id):
         try:
@@ -267,8 +278,27 @@ class RoomReviews(APIView):
             status=status.HTTP_200_OK,
         )
 
+    @swagger_auto_schema(tags=[ROOM_REVIEW_TAG], request_body=ReviewsSerializer)
+    def post(self, request, room_id):
+        serializer = ReviewsSerializer(data=request.data)
+        if serializer.is_valid():
+            review = serializer.save(
+                user=request.user,
+                room=self.get_object(room_id),
+            )
+            serializer = ReviewsSerializer(review)
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        return Response(serializer.errors)
+
 
 class RoomPhotos(APIView):
+    permission_classes = [
+        IsAuthenticatedOrReadOnly,
+    ]
+
     @staticmethod
     def get_object(room_id):
         return get_object_or_404(Room, id=room_id)
