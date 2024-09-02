@@ -303,7 +303,7 @@ class RoomPhotos(APIView):
     def get_object(room_id):
         return get_object_or_404(Room, id=room_id)
 
-    @swagger_auto_schema(tags=ROOM_PHOTO_TAG, request_body=PhotoSerializer)
+    @swagger_auto_schema(tags=[ROOM_PHOTO_TAG], request_body=PhotoSerializer)
     def post(self, request, room_id):
         if not request.user.is_authenticated:
             raise NotAuthenticated
