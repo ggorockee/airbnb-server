@@ -62,7 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=150,
         editable=False,
     )
-    avatar = models.ImageField(blank=True)
+    avatar = models.URLField(blank=True)
     username = models.CharField(
         max_length=150,
         default="",
