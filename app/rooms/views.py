@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from categories.models import Category
+from medias.serializers import PhotoSerializer
 from reviews.seirializers import ReviewsSerializer
 from rooms.models import Amenity, Room
 from rooms.serializers import AmenitySerializer, RoomsSerializer, RoomDetailSerializer
@@ -19,6 +20,7 @@ from rooms.serializers import AmenitySerializer, RoomsSerializer, RoomDetailSeri
 ROOM_TAG = "Rooms"
 ROOM_AMENITY_TAG = f"{ROOM_TAG}/Amenities"
 ROOM_REVIEW_TAG = f"{ROOM_TAG}/Reviews"
+ROOM_PHOTO_TAG = f"{ROOM_TAG}/Photos"
 
 
 class Amenities(APIView):
@@ -264,3 +266,25 @@ class RoomReviews(APIView):
             serializer.data,
             status=status.HTTP_200_OK,
         )
+
+
+class RoomPhotos(APIView):
+    @staticmethod
+    def get_object(room_id):
+        return get_object_or_404(Room, id=room_id)
+
+    @swagger_auto_schema(tags=ROOM_PHOTO_TAG, request_body=PhotoSerializer)
+    def post(self, request, room_id):
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+
+        room = self.get_object(room_id)
+        if request.user != room.owner:
+            raise PermissionDenied
+
+        serializer = PhotoSerializer(data=request.data)
+        if serializer.is_valid():
+            photo = serializer.save(room=room)
+            serializer = PhotoSerializer(photo)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
