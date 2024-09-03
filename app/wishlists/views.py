@@ -10,7 +10,7 @@ from wishlists.models import Wishlist
 from wishlists.serializers import WishlistSerializer
 
 WISHLIST_TAG = "WishList"
-WISHLIST_TOGGLE_TAG = "WishList/Toggle"
+WISHLIST_TOGGLE_TAG = "WishList / Toggle"
 
 
 class WishList(APIView):

@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 from medias.models import Photo
 
-MEDIA_PHOTO_TAG = "Medias/Photos"
+MEDIA_PHOTO_TAG = "Medias / Photos"
 
 
 class PhotoDetail(APIView):

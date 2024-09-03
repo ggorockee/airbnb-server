@@ -22,10 +22,10 @@ from rooms.models import Amenity, Room
 from rooms.serializers import AmenitySerializer, RoomsSerializer, RoomDetailSerializer
 
 ROOM_TAG = "Rooms"
-ROOM_AMENITY_TAG = f"{ROOM_TAG}/Amenities"
-ROOM_REVIEW_TAG = f"{ROOM_TAG}/Reviews"
-ROOM_PHOTO_TAG = f"{ROOM_TAG}/Photos"
-ROOM_BOOKING_TAG = f"{ROOM_TAG}/Bookings"
+ROOM_AMENITY_TAG = f"{ROOM_TAG} / Amenities"
+ROOM_REVIEW_TAG = f"{ROOM_TAG} / Reviews"
+ROOM_PHOTO_TAG = f"{ROOM_TAG} / Photos"
+ROOM_BOOKING_TAG = f"{ROOM_TAG} / Bookings"
 
 
 class Amenities(APIView):
